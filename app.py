@@ -1,4 +1,4 @@
-"""
+﻿"""
 app.py - Flask REST API Backend
 ================================
 Provides classification endpoints for the Spam SMS Classifier project.
@@ -83,9 +83,9 @@ MAX_MSG_LEN  = 1000  # character limit
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # LOAD MODEL
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 _model      = None
 _vectorizer = None
 _model_name = "Unknown"
@@ -122,9 +122,9 @@ def load_model():
         return False, _model_load_error
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # NLP PREPROCESSING  (mirrors train_model.py)
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 def preprocess(text: str) -> str:
     text = str(text).lower()
     text = re.sub(r"http\S+|www\S+", " url ", text)
@@ -134,9 +134,9 @@ def preprocess(text: str) -> str:
     return text
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # ROUTES: MULTI-PAGE FRONTEND
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -168,33 +168,33 @@ def about_page():
 
 @app.route("/style.css")
 def legacy_style():
-    return send_from_directory(STATIC_DIR, "css/style.css")
+    return send_from_directory(STATIC_DIR, "style.css")
 
 
 @app.route("/script.js")
 def legacy_script():
-    return send_from_directory(STATIC_DIR, "js/classifier.js")
+    return send_from_directory(STATIC_DIR, "script.js")
 
 
 @app.route("/chart.umd.min.js")
 def legacy_chart_script():
-    return send_from_directory(STATIC_DIR, "js/dashboard.js")
+    return send_from_directory(STATIC_DIR, "chart.umd.min.js")
 
 
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # ROUTES: API
-# ─────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.route("/api/predict", methods=["POST"])
 def predict():
     """
     Classify an SMS message.
     Body: { "message": "..." }
     """
-    # ── Validate model is loaded ──
+    # â”€â”€ Validate model is loaded â”€â”€
     if _model is None or _vectorizer is None:
         return jsonify({"error": _model_load_error}), 503
 
-    # ── Parse request ──
+    # â”€â”€ Parse request â”€â”€
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Missing request data."}), 400
@@ -213,22 +213,22 @@ def predict():
         return jsonify({"error": f"Message too long (max {MAX_MSG_LEN} characters)."}), 400
 
     try:
-        # ── Preprocess & vectorize ──
+        # â”€â”€ Preprocess & vectorize â”€â”€
         clean    = preprocess(message)
         features = _vectorizer.transform([clean])
 
-        # ── Predict ──
+        # â”€â”€ Predict â”€â”€
         pred_int    = int(_model.predict(features)[0])
         prediction  = "spam" if pred_int == 1 else "ham"
 
-        # ── Confidence ──
+        # â”€â”€ Confidence â”€â”€
         if not hasattr(_model, "predict_proba"):
             return jsonify({"error": "The trained model does not provide confidence probabilities."}), 503
         proba = _model.predict_proba(features)[0]
         confidence = float(proba[list(_model.classes_).index(pred_int)])
         risk_level = "HIGH" if prediction == "spam" else "LOW"
 
-        # ── Store in DB ──
+        # â”€â”€ Store in DB â”€â”€
         try:
             prediction_id = db.insert_prediction(message, prediction, confidence, _model_name, risk_level)
         except Exception as e:
@@ -305,3 +305,4 @@ if __name__ == "__main__":
     print(f"[*] Serving frontend from: {FRONTEND_DIR}")
     print("[*] Starting Flask on http://127.0.0.1:5000\n")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)), debug=False)
+
