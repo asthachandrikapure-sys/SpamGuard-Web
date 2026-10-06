@@ -1,43 +1,439 @@
-﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Spam SMS Classifier – An intelligent SMS classification system powered by Machine Learning and Natural Language Processing. Detect spam messages instantly." />
+  <title>Spam SMS Classifier – ML-Powered Detection</title>
 
-{% block title %}Spam SMS Classifier{% endblock %}
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-{% block content %}
-<section class="hero-section">
-  <div class="container hero-grid">
-    <div class="hero-copy">
-      <div class="eyebrow"><span class="status-pulse"></span> Machine learning Â· SMS security</div>
-      <h1>Detect Spam SMS in Seconds</h1>
-      <p>Analyze suspicious SMS messages using Machine Learning and identify whether they are Spam or Ham.</p>
-      <div class="hero-actions">
-        <a href="{{ url_for('classifier_page') }}" class="btn btn-primary">Check SMS <span aria-hidden="true">â†—</span></a>
-        <a href="{{ url_for('dashboard_page') }}" class="btn btn-secondary">Open dashboard</a>
+  <!-- Chart.js (Local offline file with CDN fallback) -->
+  <script src="chart.umd.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"><\/script>');
+    }
+  </script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════ -->
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="nav-brand">
+      <span class="brand-icon">🛡</span>
+      <span>SpamGuard<span class="brand-highlight">AI</span></span>
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="#home"        class="nav-link active" data-section="home">Home</a>
+      <a href="#classifier"  class="nav-link"        data-section="classifier">Classifier</a>
+      <a href="#dashboard"   class="nav-link"        data-section="dashboard">Dashboard</a>
+      <a href="#history"     class="nav-link"        data-section="history">History</a>
+      <a href="#about"       class="nav-link"        data-section="about">About</a>
+    </nav>
+    <div class="nav-right">
+      <div class="system-status-pill" id="system-status-pill" title="Backend and Database connectivity status">
+        <span class="status-dot-pulse" id="status-dot"></span>
+        <span class="status-pill-text" id="status-text">Connecting...</span>
       </div>
-      <div class="hero-caption">Spam SMS Classifier <span>Â·</span> Detect spam messages using Machine Learning</div>
-    </div>
-
-    <div class="hero-visual" aria-label="Classification pipeline">
-      <div class="visual-topline"><span>LIVE CLASSIFICATION PIPELINE</span><span class="online-indicator">MODEL READY</span></div>
-      <div class="pipeline-node"><span class="pipeline-index">01</span><span><b>SMS input</b><small>Message received</small></span><i>01</i></div>
-      <div class="pipeline-node"><span class="pipeline-index">02</span><span><b>Text processing</b><small>Normalized for analysis</small></span><i>02</i></div>
-      <div class="pipeline-node"><span class="pipeline-index">03</span><span><b>TF-IDF features</b><small>Existing fitted vectorizer</small></span><i>03</i></div>
-      <div class="pipeline-node"><span class="pipeline-index">04</span><span><b>Trained classifier</b><small>Spam / Ham prediction</small></span><i>04</i></div>
-      <div class="pipeline-foot"><span class="pipeline-line"></span> RESULTS STORED IN DATABASE</div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
-</section>
+</header>
 
-<section class="section pipeline-section">
+<main>
+
+<!-- ══════════════════════════════════════════
+     HOME / HERO SECTION
+════════════════════════════════════════════ -->
+<section id="home" class="section hero-section">
   <div class="container">
-    <div class="overview-heading"><div><span class="section-tag">How it works</span><h2>From raw text to a saved result</h2></div></div>
-    <div class="steps-grid pipeline-steps">
-      <article class="step-card"><span class="step-number">01</span><h3>SMS input</h3><p>Enter or paste a message for analysis.</p></article>
-      <article class="step-card"><span class="step-number">02</span><h3>Preprocessing</h3><p>Lowercase, normalize links and numbers, and remove punctuation.</p></article>
-      <article class="step-card"><span class="step-number">03</span><h3>Feature extraction</h3><p>The fitted TF-IDF vectorizer transforms the cleaned text.</p></article>
-      <article class="step-card"><span class="step-number">04</span><h3>ML classification</h3><p>The trained classifier returns a label and class probability.</p></article>
-      <article class="step-card"><span class="step-number">05</span><h3>Database storage</h3><p>Prediction, confidence, risk, and time are recorded.</p></article>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Machine Learning &amp; NLP
+      </div>
+      <h1 class="hero-title">
+        Detect Spam.<br/>Protect Your Messages.
+      </h1>
+      <p class="hero-subtitle">
+        An intelligent SMS classification system powered by Machine Learning and
+        Natural Language Processing. Identify suspicious messages with high accuracy.
+      </p>
+      <div class="hero-actions">
+        <a href="#classifier" class="btn btn-primary btn-lg" id="btn-check-sms">
+          Check an SMS
+          <span class="btn-arrow">→</span>
+        </a>
+        <a href="#dashboard" class="btn btn-ghost btn-lg">View Dashboard</a>
+      </div>
+    </div>
+
+    <div class="hero-features">
+      <div class="feature-card" id="feat-detection">
+        <div class="feature-icon">🔍</div>
+        <h3 class="feature-title">Spam Detection</h3>
+        <p class="feature-desc">Identifies suspicious patterns using trained NLP models.</p>
+      </div>
+      <div class="feature-card" id="feat-ml">
+        <div class="feature-icon">🤖</div>
+        <h3 class="feature-title">Machine Learning</h3>
+        <p class="feature-desc">Three models — Naive Bayes, Logistic Regression, and SVM.</p>
+      </div>
+      <div class="feature-card" id="feat-fast">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">Fast Prediction</h3>
+        <p class="feature-desc">Real-time classification with confidence scoring.</p>
+      </div>
     </div>
   </div>
 </section>
-{% endblock %}
 
+<!-- ══════════════════════════════════════════
+     CLASSIFIER SECTION
+════════════════════════════════════════════ -->
+<section id="classifier" class="section classifier-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Analyze Your SMS</h2>
+      <p class="section-subtitle">Paste or type an SMS message below to classify it as spam or ham.</p>
+    </div>
+
+    <div class="classifier-grid">
+      <!-- Input card -->
+      <div class="card input-card">
+        <div class="card-header">
+          <span class="card-icon">✉</span>
+          <span class="card-label">SMS Message</span>
+          <span class="char-counter" id="char-counter">0 / 1000</span>
+        </div>
+        <textarea
+          id="sms-input"
+          class="sms-textarea"
+          placeholder="Enter or paste your SMS message here..."
+          maxlength="1000"
+          rows="7"
+          aria-label="SMS message input"
+        ></textarea>
+        <div class="input-actions">
+          <button class="btn btn-primary" id="btn-classify" aria-label="Classify message">
+            <span class="btn-spinner hidden" id="spinner">⟳</span>
+            Classify Message
+          </button>
+          <button class="btn btn-secondary" id="btn-clear" aria-label="Clear input">Clear</button>
+        </div>
+      </div>
+
+      <!-- Result card -->
+      <div class="card result-card" id="result-card">
+        <div class="result-placeholder" id="result-placeholder">
+          <div class="placeholder-icon">📨</div>
+          <p>Your classification result will appear here.</p>
+        </div>
+
+        <div class="result-content hidden" id="result-content">
+          <div class="result-badge" id="result-badge">
+            <span class="badge-label" id="result-label">–</span>
+          </div>
+          <p class="result-verdict" id="result-verdict">–</p>
+
+          <div class="result-details">
+            <div class="detail-item">
+              <span class="detail-key">Confidence</span>
+              <span class="detail-val" id="detail-confidence">–</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-key">Model Used</span>
+              <span class="detail-val" id="detail-model">–</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-key">Message Length</span>
+              <span class="detail-val" id="detail-length">–</span>
+            </div>
+          </div>
+
+          <div class="confidence-bar-wrap">
+            <div class="confidence-bar-label">
+              <span>Confidence Level</span>
+              <span id="confidence-pct">0%</span>
+            </div>
+            <div class="confidence-bar-track">
+              <div class="confidence-bar-fill" id="confidence-bar"></div>
+            </div>
+          </div>
+
+          <div class="analyzed-msg-box" id="analyzed-msg-box">
+            <span class="analyzed-msg-label">Message Analyzed:</span>
+            <p class="analyzed-msg-text" id="analyzed-msg-text">–</p>
+          </div>
+
+          <p class="safety-disclaimer">ℹ Note: This classifier provides statistical predictions based on trained NLP patterns and does not guarantee message safety.</p>
+        </div>
+
+        <div class="result-error hidden" id="result-error">
+          <div class="error-icon">⚠</div>
+          <p id="error-message">An error occurred.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sample messages -->
+    <div class="sample-section">
+      <p class="sample-label">Try a sample:</p>
+      <div class="sample-buttons" id="sample-buttons">
+        <button class="sample-btn spam-sample" data-msg="Congratulations! You have been selected as a lucky winner. Call 09061701461 to claim your £900 prize. Valid 12 hours only!">Spam Sample 1</button>
+        <button class="sample-btn spam-sample" data-msg="URGENT: Your PayPal account has been limited. Verify your information immediately at http://fake-paypal-verify.com">Spam Sample 2</button>
+        <button class="sample-btn ham-sample" data-msg="Hey, are you coming to the study group this evening? We are meeting at the library at 6pm.">Ham Sample 1</button>
+        <button class="sample-btn ham-sample" data-msg="The package you ordered has been delivered. Please collect it from the reception desk.">Ham Sample 2</button>
+        <button class="sample-btn ham-sample" data-msg="Good morning! Don't forget our team meeting is at 9am today in conference room B.">Ham Sample 3</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     DASHBOARD SECTION
+════════════════════════════════════════════ -->
+<section id="dashboard" class="section dashboard-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Dashboard</h2>
+      <p class="section-subtitle">Live statistics from the classification database.</p>
+      <button class="btn btn-secondary btn-sm" id="btn-refresh-stats" aria-label="Refresh statistics">↻ Refresh</button>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card" id="stat-total">
+        <div class="stat-icon">📊</div>
+        <div class="stat-body">
+          <span class="stat-value" id="stat-total-val">–</span>
+          <span class="stat-label">Total Messages</span>
+        </div>
+      </div>
+      <div class="stat-card spam-stat" id="stat-spam">
+        <div class="stat-icon">🚫</div>
+        <div class="stat-body">
+          <span class="stat-value" id="stat-spam-val">–</span>
+          <span class="stat-label">Spam Messages</span>
+        </div>
+      </div>
+      <div class="stat-card ham-stat" id="stat-ham">
+        <div class="stat-icon">✅</div>
+        <div class="stat-body">
+          <span class="stat-value" id="stat-ham-val">–</span>
+          <span class="stat-label">Ham Messages</span>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-pct">
+        <div class="stat-icon">📈</div>
+        <div class="stat-body">
+          <span class="stat-value" id="stat-pct-val">–</span>
+          <span class="stat-label">Spam Rate</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart + Model Performance -->
+    <div class="dashboard-grid">
+      <div class="card chart-card">
+        <h3 class="card-title">Spam vs. Ham Distribution</h3>
+        <div class="chart-wrap">
+          <canvas id="donut-chart" aria-label="Spam vs Ham distribution chart"></canvas>
+          <div class="chart-center-text" id="chart-center-text">–</div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-dot spam-dot"></span><span>Spam</span>
+          <span class="legend-dot ham-dot"></span><span>Ham</span>
+        </div>
+      </div>
+
+      <div class="card perf-card">
+        <h3 class="card-title">Model Performance</h3>
+        <div class="table-responsive">
+          <table class="perf-table" id="perf-table" aria-label="Model performance table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Accuracy</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1 Score</th>
+              </tr>
+            </thead>
+            <tbody id="perf-tbody">
+              <tr><td colspan="5" class="table-loading">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     HISTORY SECTION
+════════════════════════════════════════════ -->
+<section id="history" class="section history-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Classification History</h2>
+      <p class="section-subtitle">All previously analyzed messages stored in the database.</p>
+    </div>
+
+    <div class="history-controls">
+      <input
+        type="text"
+        id="history-search"
+        class="search-input"
+        placeholder="Search messages..."
+        aria-label="Search history"
+      />
+      <div class="filter-group">
+        <button class="filter-btn active" id="filter-all"  data-filter="all">All</button>
+        <button class="filter-btn"        id="filter-spam" data-filter="spam">Spam</button>
+        <button class="filter-btn"        id="filter-ham"  data-filter="ham">Ham</button>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btn-refresh-history" aria-label="Refresh history">↻ Refresh</button>
+    </div>
+
+    <div class="card table-card">
+      <div class="table-responsive">
+        <table class="history-table" id="history-table" aria-label="Classification history table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Message</th>
+              <th>Prediction</th>
+              <th>Confidence</th>
+              <th>Model</th>
+              <th>Date &amp; Time</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr><td colspan="6" class="table-loading">Loading history...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="history-count" class="history-count">–</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     ABOUT SECTION
+════════════════════════════════════════════ -->
+<section id="about" class="section about-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">About the Project</h2>
+      <p class="section-subtitle">An engineering project demonstrating the application of NLP and ML for SMS classification.</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="card about-card">
+        <div class="about-icon">🚫</div>
+        <h3>What is Spam SMS?</h3>
+        <p>Spam SMS messages are unsolicited, bulk text messages typically sent to promote commercial offers, conduct phishing attacks, or attempt fraud. They often contain suspicious links, prize offers, or urgent requests for personal information.</p>
+      </div>
+      <div class="card about-card">
+        <div class="about-icon">✅</div>
+        <h3>What is Ham SMS?</h3>
+        <p>Ham SMS messages are legitimate, wanted messages from known contacts or trusted services. These include personal conversations, genuine notifications, appointment reminders, and other non-promotional communications.</p>
+      </div>
+      <div class="card about-card">
+        <div class="about-icon">⚙</div>
+        <h3>How Does the System Work?</h3>
+        <p>The system applies Natural Language Processing to preprocess text, extracts TF-IDF features, and passes them to a trained Machine Learning classifier. The result is stored in a database for further analysis.</p>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="card pipeline-card">
+      <h3 class="card-title">Classification Pipeline</h3>
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <div class="pipe-icon">✉</div>
+          <div class="pipe-label">SMS Input</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipe-icon">🔤</div>
+          <div class="pipe-label">Text Preprocessing</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipe-icon">📐</div>
+          <div class="pipe-label">TF-IDF Feature Extraction</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipe-icon">🤖</div>
+          <div class="pipe-label">ML Model</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipe-icon">🔮</div>
+          <div class="pipe-label">Prediction</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipe-icon">💾</div>
+          <div class="pipe-label">Database Storage</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipeline-step">
+          <div class="pipe-icon">📊</div>
+          <div class="pipe-label">Result</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech stack -->
+    <div class="card tech-card">
+      <h3 class="card-title">Technologies Used</h3>
+      <div class="tech-grid">
+        <div class="tech-item"><span class="tech-badge">NLP</span> Text Preprocessing</div>
+        <div class="tech-item"><span class="tech-badge">ML</span> Scikit-learn Models</div>
+        <div class="tech-item"><span class="tech-badge">TF-IDF</span> Feature Extraction</div>
+        <div class="tech-item"><span class="tech-badge">Flask</span> REST API Backend</div>
+        <div class="tech-item"><span class="tech-badge">SQLite</span> Prediction Database</div>
+        <div class="tech-item"><span class="tech-badge">HTML/CSS/JS</span> Frontend</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-left">
+      <span class="footer-brand">🛡 SpamGuardAI</span>
+      <span class="footer-note">SMS Spam Classifier — Engineering Project</span>
+    </div>
+    <div class="footer-right">
+      <span>Built with Python · Flask · Scikit-learn · SQLite</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
