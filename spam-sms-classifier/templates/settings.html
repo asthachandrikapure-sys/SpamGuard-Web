@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% block title %}Settings — SpamGuard{% endblock %}
+
+{% block content %}
+<section class="page-section settings-page">
+  <div class="container narrow">
+    <div class="page-header">
+      <span class="section-tag">Security &amp; Preferences</span>
+      <h1>Settings</h1>
+      <p>Configure automated protection, privacy masking, device connections, and account security.</p>
+    </div>
+
+    <!-- Alert / Toast Message -->
+    <div id="settings-alert" class="alert-box" style="display:none;margin-bottom:24px"></div>
+
+    <!-- 1. Protection Settings -->
+    <section class="panel-card" style="margin-bottom:24px">
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">Automated Defense</span>
+          <h2 class="panel-title">Protection Controls</h2>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;margin-top:12px">
+        <div class="settings-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-soft)">
+          <div>
+            <strong style="color:var(--text);font-size:0.95rem;display:block">SMS Monitoring</strong>
+            <small style="color:var(--text-muted);font-size:0.82rem">Automatically intercept and inspect incoming SMS on connected devices</small>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-sms-monitoring" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-soft)">
+          <div>
+            <strong style="color:var(--text);font-size:0.95rem;display:block">AI Detection</strong>
+            <small style="color:var(--text-muted);font-size:0.82rem">Real-time classification using SpamGuard Support Vector Machine &amp; TF-IDF</small>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-ai-detection" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+          <div>
+            <strong style="color:var(--text);font-size:0.95rem;display:block">High Risk Alerts</strong>
+            <small style="color:var(--text-muted);font-size:0.82rem">Display instant Android security push notifications when malicious spam arrives</small>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-high-risk-alerts" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Privacy Settings -->
+    <section class="panel-card" style="margin-bottom:24px">
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">Data Confidentiality</span>
+          <h2 class="panel-title">Privacy Controls</h2>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;margin-top:12px">
+        <div class="settings-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-soft)">
+          <div>
+            <strong style="color:var(--text);font-size:0.95rem;display:block">Mask Phone Numbers</strong>
+            <small style="color:var(--text-muted);font-size:0.82rem">Obfuscate incoming senders and phone digits (e.g. +91 ******45)</small>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-mask-numbers" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+          <div>
+            <strong style="color:var(--text);font-size:0.95rem;display:block">Hide SMS Content</strong>
+            <small style="color:var(--text-muted);font-size:0.82rem">Blur full message text by default until explicitly clicked</small>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="setting-hide-content" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;text-align:right">
+        <button id="btn-save-settings" class="btn btn-primary btn-sm">💾 Save Preferences</button>
+      </div>
+    </section>
+
+    <!-- 3. Connected Devices -->
+    <section class="panel-card" style="margin-bottom:24px">
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">Mobile Companion</span>
+          <h2 class="panel-title">Connected Devices</h2>
+        </div>
+        <a href="/devices" class="btn btn-ghost btn-sm">View details →</a>
+      </div>
+      <div id="settings-device-info" style="margin-top:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--border-soft);border-radius:var(--radius-sm)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-size:1.6rem">📱</span>
+            <div>
+              <strong id="settings-phone-name" style="color:var(--text);font-size:0.95rem;display:block">Android Phone</strong>
+              <small id="settings-phone-status" style="color:var(--text-muted);font-size:0.82rem">Checking connection…</small>
+            </div>
+          </div>
+          <span id="settings-phone-badge" class="badge badge-inactive">CHECKING</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Account Profile & Security -->
+    <section class="panel-card">
+      <div class="panel-header">
+        <div>
+          <span class="panel-kicker">Identity &amp; Credentials</span>
+          <h2 class="panel-title">Account Security</h2>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;margin-top:14px">
+        <div class="form-group">
+          <label class="form-label" for="account-name">Display Name</label>
+          <div style="display:flex;gap:12px">
+            <input type="text" id="account-name" class="form-input" style="flex:1" placeholder="Your name" value="{{ user.name if user else '' }}" />
+            <button id="btn-update-name" class="btn btn-secondary btn-sm">Update Name</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="account-email">Email Address</label>
+          <input type="email" id="account-email" class="form-input" value="{{ user.email if user else '' }}" disabled style="opacity:0.6;cursor:not-allowed" />
+          <small style="color:var(--text-muted);font-size:0.75rem;margin-top:4px;display:block">Email cannot be changed directly for security reasons.</small>
+        </div>
+
+        <div style="border-top:1px solid var(--border-soft);padding-top:18px;margin-top:6px">
+          <h3 style="font-size:0.95rem;color:var(--text);margin-bottom:12px">Change Password</h3>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="form-group">
+              <label class="form-label" for="current-password">Current Password</label>
+              <input type="password" id="current-password" class="form-input" placeholder="Enter current password" />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-group">
+                <label class="form-label" for="new-password">New Password</label>
+                <input type="password" id="new-password" class="form-input" placeholder="At least 6 characters" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="confirm-password">Confirm New Password</label>
+                <input type="password" id="confirm-password" class="form-input" placeholder="Repeat new password" />
+              </div>
+            </div>
+            <div style="text-align:right;margin-top:4px">
+              <button id="btn-update-password" class="btn btn-secondary btn-sm">Update Password</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border-soft);padding-top:18px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <strong style="color:var(--text);font-size:0.95rem;display:block">Session Management</strong>
+            <small style="color:var(--text-muted);font-size:0.82rem">Sign out of your SpamGuard account on this device</small>
+          </div>
+          <button id="btn-logout" class="btn btn-danger btn-sm">🚪 Logout</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

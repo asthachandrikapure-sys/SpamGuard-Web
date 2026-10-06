@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Create your free SpamGuard account — AI-powered SMS security." />
+    <title>Sign Up — SpamGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-card animate-fade">
+      <div class="auth-logo">
+        <span class="brand-mark">🛡️</span>
+        <span class="brand-text">SPAMGUARD</span>
+      </div>
+
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-sub">Start protecting your SMS messages with AI</p>
+
+      <div class="auth-alert" id="auth-alert" role="alert"></div>
+
+      <form id="signup-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="name">Full name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="form-input"
+            placeholder="Your full name"
+            autocomplete="name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-input"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mobile">Mobile Number (for Android phone SIM protection)</label>
+          <input
+            type="tel"
+            id="mobile"
+            name="mobile"
+            class="form-input"
+            placeholder="e.g. 9503564504"
+            autocomplete="tel"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-input"
+            placeholder="At least 6 characters"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirm-password">Confirm password</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm_password"
+            class="form-input"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="submit-btn">
+          Create Account
+        </button>
+      </form>
+
+      <hr class="auth-divider" />
+
+      <p class="auth-footer">
+        Already have an account?
+        <a href="{{ url_for('login_page') }}" class="auth-link">Sign in</a>
+      </p>
+      <p class="auth-footer" style="margin-top:8px">
+        <a href="{{ url_for('home') }}" class="auth-link" style="color:var(--text-muted)">← Back to home</a>
+      </p>
+    </div>
+
+    <script>
+      const form  = document.getElementById('signup-form');
+      const alert = document.getElementById('auth-alert');
+      const btn   = document.getElementById('submit-btn');
+
+      function showAlert(msg, type = 'error') {
+        alert.textContent = msg;
+        alert.className = 'auth-alert ' + type;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name     = document.getElementById('name').value.trim();
+        const email    = document.getElementById('email').value.trim();
+        const mobile   = document.getElementById('mobile').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm  = document.getElementById('confirm-password').value;
+
+        alert.className = 'auth-alert';
+
+        if (!name || name.length < 2) { showAlert('Please enter your full name (at least 2 characters).'); return; }
+        if (!email || !email.includes('@')) { showAlert('Please enter a valid email address.'); return; }
+        if (password.length < 6) { showAlert('Password must be at least 6 characters.'); return; }
+        if (password !== confirm) { showAlert('Passwords do not match.'); return; }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Creating account…';
+
+        try {
+          const res  = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, mobile_number: mobile, password, confirm_password: confirm })
+          });
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            showAlert('Account created! Redirecting to dashboard…', 'success');
+            setTimeout(() => window.location.href = data.redirect || '/dashboard', 900);
+          } else {
+            showAlert(data.error || 'Sign up failed. Please try again.');
+            btn.disabled = false;
+            btn.textContent = 'Create Account';
+          }
+        } catch {
+          showAlert('Unable to connect to SpamGuard server. Please try again.');
+          btn.disabled = false;
+          btn.textContent = 'Create Account';
+        }
+      });
+    </script>
+  </body>
+</html>

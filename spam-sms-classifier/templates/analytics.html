@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Analytics — SpamGuard{% endblock %}
+
+{% block content %}
+<section class="page-section analytics-page">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag">Database Analytics <span class="live-dot"></span></span>
+      <h1>Protection Analytics</h1>
+      <p>Spam detection trends, risk distribution, and confidence metrics from real AI classifications.</p>
+    </div>
+
+    <!-- Top stats row -->
+    <div class="stats-grid four-col analytics-stats" id="analytics-stats">
+      <article class="mini-card">
+        <div class="metric-index">01</div>
+        <div>
+          <div class="mini-number" id="analytics-total">—</div>
+          <div class="mini-label">Total messages</div>
+        </div>
+      </article>
+      <article class="mini-card danger">
+        <div class="metric-index">02</div>
+        <div>
+          <div class="mini-number" id="analytics-rate">—</div>
+          <div class="mini-label">Spam detection rate</div>
+        </div>
+      </article>
+      <article class="mini-card high-risk-card">
+        <div class="metric-index">03</div>
+        <div>
+          <div class="mini-number" id="analytics-high-risk">—</div>
+          <div class="mini-label">High risk messages</div>
+        </div>
+      </article>
+      <article class="mini-card success">
+        <div class="metric-index">04</div>
+        <div>
+          <div class="mini-number" id="analytics-confidence">—</div>
+          <div class="mini-label">Average confidence</div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Charts grid -->
+    <div class="analytics-grid">
+      <section class="panel-card chart-panel">
+        <div class="panel-head">
+          <div><span class="panel-kicker">Distribution</span><h2>Spam vs Safe</h2></div>
+        </div>
+        <div class="chart-wrap" style="max-width:280px;margin:0 auto">
+          <canvas id="spam-ham-chart" aria-label="Spam versus ham chart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel-card chart-panel">
+        <div class="panel-head">
+          <div><span class="panel-kicker">Risk levels</span><h2>Risk Distribution</h2></div>
+        </div>
+        <div class="chart-wrap" style="max-width:280px;margin:0 auto">
+          <canvas id="risk-chart" aria-label="Risk level chart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel-card chart-panel full-width">
+        <div class="panel-head">
+          <div><span class="panel-kicker">Last 14 days</span><h2>Daily SMS Detections</h2></div>
+        </div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="daily-chart" aria-label="Daily detections chart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel-card chart-panel confidence-panel full-width">
+        <div class="panel-head">
+          <div><span class="panel-kicker">Model output</span><h2>AI Confidence Score</h2></div>
+        </div>
+        <div class="confidence-summary">
+          <strong id="confidence-average">—</strong>
+          <span style="display:block;margin-top:6px;color:var(--text-muted);font-size:0.85rem">Average predicted-class probability across all classified messages</span>
+        </div>
+        <div class="confidence-track" style="margin:16px 0 8px">
+          <div id="confidence-meter" class="confidence-fill" style="width:0%"></div>
+        </div>
+      </section>
+    </div>
+
+    <p id="analytics-error" class="data-status" role="status"></p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

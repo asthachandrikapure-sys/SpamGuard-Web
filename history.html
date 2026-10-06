@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}History | Spam SMS Classifier{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag">History</span>
+      <h1>Prediction History</h1>
+      <p>Review all previously classified messages saved in the database.</p>
+    </div>
+
+    <div class="toolbar card-toolbar">
+      <input type="text" id="history-search" class="search-input" placeholder="Search messages..." />
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="spam">Spam</button>
+        <button class="filter-btn" data-filter="ham">Ham</button>
+      </div>
+      <button class="btn btn-secondary btn-small" id="btn-refresh-history">Refresh</button>
+    </div>
+
+    <div class="panel-card">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Message</th>
+              <th>Prediction</th>
+              <th>Confidence</th>
+              <th>Date &amp; Time</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr><td colspan="5">Loading history...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="history-count">0 records</span>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

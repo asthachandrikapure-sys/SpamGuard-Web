@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.SpamGuard" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#A7D957</item>
+        <item name="android:statusBarColor">#101711</item>
+        <item name="android:navigationBarColor">#101711</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

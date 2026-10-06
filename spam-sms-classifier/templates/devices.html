@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block title %}Devices — SpamGuard{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag">Connected Devices</span>
+      <h1>📱 Connected Devices</h1>
+      <p>Manage Android phones connected to your SpamGuard protection system.</p>
+    </div>
+
+    <!-- Connected device (real data from API) -->
+    <div class="devices-section">
+      <h2 style="font-size:0.9rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:16px">Your Devices</h2>
+
+      <div id="device-list">
+        <!-- Populated by JS -->
+        <div class="loading-row"><span class="spinner"></span> Checking device status…</div>
+      </div>
+
+      <!-- Connect new device CTA -->
+      <div class="connect-device-card" id="connect-card" style="display:none">
+        <div class="connect-icon">📱</div>
+        <div class="connect-title">Connect Android Device</div>
+        <div class="connect-sub">No Android device is currently connected. Install the SpamGuard companion app to start protecting your SMS.</div>
+        <a href="/protection" class="btn btn-primary">📡 View Setup Instructions</a>
+      </div>
+    </div>
+
+    <!-- Android Setup Instructions -->
+    <div class="activity-section" style="margin-top:24px">
+      <div class="section-heading-row">
+        <div>
+          <span class="section-tag">Setup Guide</span>
+          <h2>How to Connect SpamGuard Android</h2>
+        </div>
+      </div>
+
+      <div class="setup-steps">
+        <div class="setup-step">
+          <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.85rem;font-weight:800;flex-shrink:0">1</div>
+          <div class="step-content">
+            <h4>Open Android Studio</h4>
+            <p>Open the project at <code>spam-sms-classifier/android/</code> in Android Studio.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.85rem;font-weight:800;flex-shrink:0">2</div>
+          <div class="step-content">
+            <h4>Configure Server URL</h4>
+            <p>In <code>app/build.gradle.kts</code>, set <code>API_BASE_URL</code> to your Flask backend URL (e.g., <code>http://192.168.x.x:5000/</code> for local network).</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.85rem;font-weight:800;flex-shrink:0">3</div>
+          <div class="step-content">
+            <h4>Build & Install on Phone</h4>
+            <p>Connect your Android phone via USB, run the app. Grant <strong>SMS permission</strong> and <strong>Notification permission</strong>.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.85rem;font-weight:800;flex-shrink:0">4</div>
+          <div class="step-content">
+            <h4>Enable Auto Protection</h4>
+            <p>In the SpamGuard app, toggle <strong>Auto Protection</strong> to ON. The device will appear as CONNECTED above within 20 seconds.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.85rem;font-weight:800;flex-shrink:0">5</div>
+          <div class="step-content">
+            <h4>SMS Auto-Analysis Active</h4>
+            <p>Every incoming SMS will now be automatically classified by SpamGuard AI. High-risk spam triggers an on-device notification.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Privacy note -->
+      <div style="margin-top:20px;padding:16px;background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.15);border-radius:var(--radius-md)">
+        <strong style="font-size:0.88rem;display:flex;align-items:center;gap:6px">🔒 Privacy Guarantee</strong>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:6px;line-height:1.6">SpamGuard <strong>never</strong> reads your existing SMS inbox, never forwards messages, never deletes messages, and never sends SMS automatically. Only newly received messages are analyzed when you enable protection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function timeAgo(dateString) {
+  if (!dateString) return 'never';
+  const diff = Math.floor((new Date() - new Date(dateString)) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+  return new Date(dateString).toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+async function loadDevices() {
+  try {
+    const [devRes, protRes] = await Promise.all([
+      fetch('/api/devices'),
+      fetch('/api/protection-status')
+    ]);
+
+    const devices = devRes.ok ? await devRes.json() : [];
+    const status  = protRes.ok ? await protRes.json() : {};
+
+    const list        = document.getElementById('device-list');
+    const connectCard = document.getElementById('connect-card');
+    const monitoring  = status.monitoring_active ?? true;
+
+    if (Array.isArray(devices) && devices.length > 0) {
+      connectCard.style.display = 'none';
+      list.innerHTML = devices.map(d => {
+        const isConnected = Boolean(d.connected);
+        const lastSeenStr = timeAgo(d.last_seen);
+        const phone = d.mobile_number ? `SIM: ${d.mobile_number}` : 'Companion App';
+
+        return `
+          <div class="device-card ${isConnected ? 'connected' : ''}">
+            <div class="device-card-left">
+              <div class="device-icon phone" style="font-size:1.8rem">📱</div>
+              <div class="device-info">
+                <div class="device-name" style="font-weight:700;font-size:1.05rem;color:var(--text)">${d.device_name}</div>
+                <div class="device-detail" style="font-size:0.82rem;color:var(--text-muted);margin-top:2px">
+                  ${phone} &nbsp;·&nbsp; Token: <code style="font-size:0.75rem;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">${d.device_token || '—'}</code>
+                  <br/><span style="display:inline-block;margin-top:4px">Last Activity: <strong>${lastSeenStr}</strong></span>
+                </div>
+              </div>
+            </div>
+            <div class="device-card-actions">
+              <div style="text-align:right">
+                <div>
+                  ${isConnected
+                    ? '<span class="badge badge-connected"><span class="pulse-dot"></span> CONNECTED</span>'
+                    : '<span class="badge" style="background:rgba(255,255,255,0.06);color:var(--text-muted)">DISCONNECTED</span>'
+                  }
+                </div>
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">
+                  SMS Protection: ${monitoring ? '<strong style="color:var(--green)">ON</strong>' : '<strong style="color:var(--text-muted)">OFF</strong>'}
+                </div>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="color:var(--text-muted);padding:4px 8px" onclick="removeDevice(${d.id})" title="Remove Device">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      list.innerHTML = '';
+      connectCard.style.display = 'block';
+    }
+  } catch (err) {
+    console.error('Failed to load devices:', err);
+    document.getElementById('device-list').innerHTML =
+      `<div class="activity-empty" style="color:var(--text-muted)">
+        Unable to reach SpamGuard server. Retrying…
+      </div>`;
+    document.getElementById('connect-card').style.display = 'block';
+  }
+}
+
+async function removeDevice(deviceId) {
+  if (!confirm('Are you sure you want to disconnect this device?')) return;
+  try {
+    const res = await fetch(`/api/devices/${deviceId}`, { method: 'DELETE' });
+    if (res.ok) loadDevices();
+  } catch (e) {
+    alert('Failed to remove device.');
+  }
+}
+
+loadDevices();
+setInterval(loadDevices, 10000);
+</script>
+{% endblock %}

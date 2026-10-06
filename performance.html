@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Model Performance | Spam SMS Classifier{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag">Model Performance</span>
+      <h1>Model Performance</h1>
+      <p>Compare the trained classifiers using the metrics recorded during evaluation.</p>
+    </div>
+
+    <div class="panel-card performance-panel">
+      <div class="table-wrap">
+        <table class="data-table performance-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Accuracy</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1 Score</th>
+            </tr>
+          </thead>
+          <tbody id="performance-body">
+            <tr><td colspan="5">Loading performance data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="panel-card">
+        <h3>Evaluation Metrics</h3>
+        <ul class="metric-list">
+          <li><strong>Accuracy:</strong> Correct predictions across the evaluation set.</li>
+          <li><strong>Precision:</strong> The proportion of predicted spam messages that were spam.</li>
+          <li><strong>Recall:</strong> The proportion of spam messages correctly identified.</li>
+          <li><strong>F1 Score:</strong> A combined measure of precision and recall.</li>
+        </ul>
+      </div>
+      <div class="panel-card">
+        <h3>Accuracy Comparison</h3>
+        <canvas id="performance-chart" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/performance.js') }}"></script>
+{% endblock %}

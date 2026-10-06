@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}SMS Inbox — SpamGuard{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag"><span class="live-dot"></span> Live Detections</span>
+      <h1>SMS Inbox</h1>
+      <p>AI-classified messages from your connected Android device. Sender IDs and numbers are masked.</p>
+    </div>
+
+    <div class="inbox-layout">
+      <!-- Left Sidebar -->
+      <aside class="inbox-sidebar">
+        <div class="sidebar-title">Folders</div>
+        <div class="sidebar-item active" data-filter="all" id="sidebar-all">
+          <span><span class="sidebar-icon">📥</span> All SMS</span>
+          <span class="sidebar-count" id="count-all">—</span>
+        </div>
+        <div class="sidebar-item spam-item" data-filter="spam" id="sidebar-spam">
+          <span><span class="sidebar-icon">🚨</span> Spam SMS</span>
+          <span class="sidebar-count" id="count-spam">—</span>
+        </div>
+        <div class="sidebar-item safe-item" data-filter="safe" id="sidebar-safe">
+          <span><span class="sidebar-icon">🛡️</span> Safe SMS</span>
+          <span class="sidebar-count" id="count-safe">—</span>
+        </div>
+        <div class="sidebar-item" data-filter="important" id="sidebar-important">
+          <span><span class="sidebar-icon">⭐</span> Important</span>
+          <span class="sidebar-count" id="count-important">—</span>
+        </div>
+        <div class="sidebar-item" data-filter="trash" id="sidebar-trash">
+          <span><span class="sidebar-icon">🗑️</span> Trash</span>
+          <span class="sidebar-count" id="count-trash">—</span>
+        </div>
+        <div class="sidebar-item" data-filter="high_risk" id="sidebar-high">
+          <span><span class="sidebar-icon">⚠️</span> High Risk</span>
+          <span class="sidebar-count" id="count-high">—</span>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-soft)">
+          <div class="sidebar-title" style="padding-bottom:8px;border-bottom:none">Quick Stats</div>
+          <div style="padding:8px 10px;font-size:0.8rem;color:var(--text-muted)">
+            <div style="margin-bottom:6px">Detection rate: <span id="sidebar-rate" style="color:var(--text-soft)">—</span></div>
+            <div>Model: <span style="color:var(--blue-bright);font-size:0.72rem">SVM Classifier</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main inbox panel -->
+      <div class="inbox-main">
+        <!-- Header -->
+        <div class="inbox-header">
+          <div class="inbox-title" id="inbox-panel-title">📥 All SMS</div>
+          <div class="inbox-sub" id="inbox-panel-sub">Messages detected as potentially unwanted or safe by SpamGuard AI.</div>
+        </div>
+
+        <!-- Spam panel summary (only when spam filter active) -->
+        <div id="spam-summary-bar" style="display:none;padding:14px 20px;border-bottom:1px solid var(--border-soft)">
+          <div class="spam-summary" id="spam-summary-grid">
+            <div class="spam-stat">
+              <div class="spam-stat-value" id="sp-total" style="color:var(--text)">—</div>
+              <div class="spam-stat-label">Total Spam</div>
+            </div>
+            <div class="spam-stat">
+              <div class="spam-stat-value" id="sp-high" style="color:var(--red)">—</div>
+              <div class="spam-stat-label">High Risk</div>
+            </div>
+            <div class="spam-stat">
+              <div class="spam-stat-value" id="sp-medium" style="color:var(--orange)">—</div>
+              <div class="spam-stat-label">Medium Risk</div>
+            </div>
+            <div class="spam-stat">
+              <div class="spam-stat-value" id="sp-low" style="color:var(--green)">—</div>
+              <div class="spam-stat-label">Low Risk</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toolbar: search + filters -->
+        <div class="inbox-toolbar">
+          <div class="search-input-wrap" style="flex:1;max-width:360px">
+            <span class="search-icon">🔍</span>
+            <input
+              type="search"
+              id="sms-search"
+              class="search-input"
+              placeholder="Search messages or senders…"
+              aria-label="Search SMS messages"
+            />
+          </div>
+          <div class="inbox-filters">
+            <button class="filter-chip active" data-risk="all">All</button>
+            <button class="filter-chip" data-risk="HIGH">High Risk</button>
+            <button class="filter-chip" data-risk="LOW">Low Risk</button>
+          </div>
+          <span id="inbox-count" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap"></span>
+        </div>
+
+        <!-- SMS list -->
+        <div class="sms-list" id="sms-list">
+          <div class="loading-row"><span class="spinner"></span> Loading messages…</div>
+        </div>
+
+        <!-- Message detail panel (hidden initially) -->
+        <div id="msg-detail-panel" style="display:none;border-top:1px solid var(--border-soft)">
+          <div class="msg-detail">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:10px">
+                <button class="btn btn-ghost btn-sm" id="back-to-inbox">← Back to inbox</button>
+                <span id="msg-detail-badges" style="display:flex;gap:8px"></span>
+              </div>
+              <div id="msg-detail-actions" style="display:flex;gap:8px">
+                <button class="btn btn-outline btn-sm" id="detail-star-btn" title="Toggle Important">⭐ Star</button>
+                <button class="btn btn-outline btn-sm" id="detail-unread-btn" title="Mark as Unread">✉️ Unread</button>
+                <button class="btn btn-danger btn-sm" id="detail-trash-btn" title="Move to Trash">🗑️ Trash</button>
+              </div>
+            </div>
+            <div class="msg-detail-header">
+              <div class="msg-detail-avatar" id="msg-detail-avatar">?</div>
+              <div>
+                <div class="msg-detail-sender" id="msg-detail-sender">Unknown</div>
+                <div class="msg-detail-time" id="msg-detail-time">—</div>
+              </div>
+            </div>
+            <div class="msg-detail-content" id="msg-detail-content">Message content will appear here.</div>
+            <div class="msg-detail-analysis">
+              <div class="msg-stat-item">
+                <div class="msg-stat-label">Classification</div>
+                <div class="msg-stat-value" id="msg-stat-class">—</div>
+              </div>
+              <div class="msg-stat-item">
+                <div class="msg-stat-label">Confidence</div>
+                <div class="msg-stat-value" id="msg-stat-conf">—</div>
+              </div>
+              <div class="msg-stat-item">
+                <div class="msg-stat-label">Risk Level</div>
+                <div class="msg-stat-value" id="msg-stat-risk">—</div>
+              </div>
+            </div>
+            <div style="padding:12px 14px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-muted)">
+              🤖 <strong>Detected by SpamGuard AI</strong> — Support Vector Machine + TF-IDF Vectorizer
+            </div>
+          </div>
+        </div>
+
+        <p id="inbox-error" class="data-status" style="margin:12px 20px" role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/inbox.js') }}"></script>
+{% endblock %}

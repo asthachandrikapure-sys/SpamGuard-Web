@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Live Protection — SpamGuard{% endblock %}
+
+{% block content %}
+<section class="page-section protection-page">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag">Device status</span>
+      <h1>🔴 Live Protection</h1>
+      <p>Real-time phone monitoring and AI detection status. Powered by SpamGuard Android companion app.</p>
+    </div>
+
+    <!-- Status cards -->
+    <div class="protection-grid">
+      <div class="live-status-card" id="card-phone">
+        <div class="lsc-icon" id="phone-icon">📱</div>
+        <div>
+          <div class="lsc-label">Phone Connection</div>
+          <div class="lsc-value" id="live-phone-status">Checking…</div>
+          <div class="lsc-sub" id="live-phone-seen">Waiting for phone heartbeat</div>
+        </div>
+      </div>
+
+      <div class="live-status-card" id="card-sms">
+        <div class="lsc-icon" id="sms-icon">💬</div>
+        <div>
+          <div class="lsc-label">SMS Monitoring</div>
+          <div class="lsc-value" id="live-sms-status">Checking…</div>
+          <div class="lsc-sub">Controlled on the Android device with SMS permission</div>
+        </div>
+      </div>
+
+      <div class="live-status-card" id="card-ml">
+        <div class="lsc-icon" id="ml-icon">🧠</div>
+        <div>
+          <div class="lsc-label">AI Detection</div>
+          <div class="lsc-value" id="live-ml-status">Checking…</div>
+          <div class="lsc-sub">SVM classifier + TF-IDF vectorizer (99%+ accuracy)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Latest SMS classification -->
+    <div class="activity-section">
+      <div class="section-heading-row">
+        <div>
+          <span class="section-tag">Latest result <span class="live-dot"></span></span>
+          <h2>Last Classified SMS</h2>
+        </div>
+        <a href="/inbox" class="btn btn-ghost btn-sm">View all →</a>
+      </div>
+      <div id="protection-latest" class="activity-list">
+        <div class="activity-empty">
+          No SMS classifications received yet.<br/>
+          <small style="color:var(--text-muted)">Connect the SpamGuard Android app to start monitoring.</small>
+        </div>
+      </div>
+      <p id="protection-error" class="data-status" role="status"></p>
+    </div>
+
+    <!-- How to connect -->
+    <div style="margin-top:24px">
+      <div class="activity-section">
+        <div class="section-heading-row">
+          <div>
+            <span class="section-tag">Setup</span>
+            <h2>Connecting Your Android Device</h2>
+          </div>
+        </div>
+        <div class="setup-steps">
+          <div class="setup-step">
+            <div class="step-num" style="counter-increment:none;display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.8rem;font-weight:800;flex-shrink:0">1</div>
+            <div class="step-content">
+              <h4>Install SpamGuard Android App</h4>
+              <p>Build and install the companion app from <code>spam-sms-classifier/android/</code> using Android Studio.</p>
+            </div>
+          </div>
+          <div class="setup-step">
+            <div class="step-num" style="counter-increment:none;display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.8rem;font-weight:800;flex-shrink:0">2</div>
+            <div class="step-content">
+              <h4>Grant SMS Permission</h4>
+              <p>When prompted, grant the <code>RECEIVE_SMS</code> permission so SpamGuard can monitor incoming messages.</p>
+            </div>
+          </div>
+          <div class="setup-step">
+            <div class="step-num" style="counter-increment:none;display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.8rem;font-weight:800;flex-shrink:0">3</div>
+            <div class="step-content">
+              <h4>Enable Auto Protection</h4>
+              <p>In the SpamGuard app, toggle <strong>Auto Protection ON</strong> to begin sending incoming SMS to the AI backend.</p>
+            </div>
+          </div>
+          <div class="setup-step">
+            <div class="step-num" style="counter-increment:none;display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(59,130,246,0.15);color:var(--blue-bright);border-radius:50%;font-size:0.8rem;font-weight:800;flex-shrink:0">4</div>
+            <div class="step-content">
+              <h4>Watch the Dashboard Update</h4>
+              <p>This page refreshes every 15 seconds. When your phone sends its first heartbeat, status will show <strong>CONNECTED</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/protection-status.js') }}"></script>
+{% endblock %}

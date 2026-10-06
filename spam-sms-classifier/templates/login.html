@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Login to SpamGuard — your AI-powered SMS security dashboard." />
+    <title>Login — SpamGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-card animate-fade">
+      <div class="auth-logo">
+        <span class="brand-mark">🛡️</span>
+        <span class="brand-text">SPAMGUARD</span>
+      </div>
+
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-sub">Sign in to your SMS security dashboard</p>
+
+      <div class="auth-alert" id="auth-alert" role="alert"></div>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="identifier">Mobile Number or Email</label>
+          <input
+            type="text"
+            id="identifier"
+            name="identifier"
+            class="form-input"
+            placeholder="e.g. 9503564504 or you@example.com"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <label class="form-label" for="password">Password</label>
+            <a href="{{ url_for('forgot_password_page') }}" class="auth-link" style="font-size:0.8rem">Forgot password?</a>
+          </div>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-input"
+            placeholder="Your password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="submit-btn">
+          Sign In
+        </button>
+
+        <div style="margin-top:12px;padding:8px 12px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:var(--radius-sm);font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between">
+          <span>Testing account: <strong>9503564504</strong></span>
+          <button type="button" class="btn btn-ghost btn-sm" style="padding:2px 8px;font-size:0.75rem" onclick="fillTestAccount()">Autofill</button>
+        </div>
+      </form>
+
+      <hr class="auth-divider" />
+
+      <p class="auth-footer">
+        Don't have an account?
+        <a href="{{ url_for('signup_page') }}" class="auth-link">Create one free</a>
+      </p>
+      <p class="auth-footer" style="margin-top:8px">
+        <a href="{{ url_for('home') }}" class="auth-link" style="color:var(--text-muted)">← Back to home</a>
+      </p>
+    </div>
+
+    <script>
+      const form  = document.getElementById('login-form');
+      const alert = document.getElementById('auth-alert');
+      const btn   = document.getElementById('submit-btn');
+
+      function fillTestAccount() {
+        document.getElementById('identifier').value = '9503564504';
+        document.getElementById('password').value = 'Password123!';
+      }
+
+      function showAlert(msg, type = 'error') {
+        alert.textContent = msg;
+        alert.className = 'auth-alert ' + type;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const identifier = document.getElementById('identifier').value.trim();
+        const password   = document.getElementById('password').value;
+
+        if (!identifier || !password) {
+          showAlert('Please enter your mobile number or email, and your password.');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Signing in…';
+        alert.className = 'auth-alert';
+
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identifier, email: identifier, password })
+          });
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            showAlert('Login successful! Redirecting…', 'success');
+            setTimeout(() => window.location.href = data.redirect || '/dashboard', 600);
+          } else {
+            showAlert(data.error || 'Login failed. Please check your credentials.');
+            btn.disabled = false;
+            btn.textContent = 'Sign In';
+          }
+        } catch {
+          showAlert('Unable to connect to SpamGuard server. Please try again.');
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+        }
+      });
+    </script>
+  </body>
+</html>

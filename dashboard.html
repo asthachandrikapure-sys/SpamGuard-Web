@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Spam SMS Classifier{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag">Dashboard</span>
+      <h1>Classification Dashboard</h1>
+      <p>Overview of SMS classification activity.</p>
+    </div>
+
+    <div class="stats-grid four-col">
+      <div class="mini-card">
+        <div class="mini-icon">📊</div>
+        <div>
+          <div class="mini-number" id="stat-total-val">--</div>
+          <div class="mini-label">Total Messages</div>
+        </div>
+      </div>
+      <div class="mini-card danger">
+        <div class="mini-icon">🚫</div>
+        <div>
+          <div class="mini-number" id="stat-spam-val">--</div>
+          <div class="mini-label">Spam Messages</div>
+        </div>
+      </div>
+      <div class="mini-card success">
+        <div class="mini-icon">✅</div>
+        <div>
+          <div class="mini-number" id="stat-ham-val">--</div>
+          <div class="mini-label">Ham Messages</div>
+        </div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-icon">📈</div>
+        <div>
+          <div class="mini-number" id="stat-pct-val">--</div>
+          <div class="mini-label">Spam Percentage</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-grid dashboard-grid">
+      <div class="panel-card">
+        <div class="panel-head">
+          <h3>Spam vs Ham Distribution</h3>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="donut-chart" height="220"></canvas>
+          <div class="chart-center" id="chart-center-text">0</div>
+        </div>
+        <div class="chart-legend">
+          <span><i class="dot dot-red"></i>Spam</span>
+          <span><i class="dot dot-green"></i>Ham</span>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-head">
+          <h3>Recent Activity</h3>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>SMS Message</th>
+                <th>Prediction</th>
+                <th>Confidence</th>
+                <th>Date / Time</th>
+              </tr>
+            </thead>
+            <tbody id="recent-activity-body">
+              <tr><td colspan="5">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

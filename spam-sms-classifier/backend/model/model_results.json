@@ -1,0 +1,56 @@
+[
+  {
+    "model_name": "Multinomial Naive Bayes",
+    "accuracy": 0.9855,
+    "precision": 0.9829,
+    "recall": 0.8984,
+    "f1_score": 0.9388,
+    "confusion_matrix": [
+      [
+        902,
+        2
+      ],
+      [
+        13,
+        115
+      ]
+    ],
+    "is_best": false
+  },
+  {
+    "model_name": "Logistic Regression",
+    "accuracy": 0.9787,
+    "precision": 0.9818,
+    "recall": 0.8438,
+    "f1_score": 0.9076,
+    "confusion_matrix": [
+      [
+        902,
+        2
+      ],
+      [
+        20,
+        108
+      ]
+    ],
+    "is_best": false
+  },
+  {
+    "model_name": "Support Vector Machine",
+    "accuracy": 0.9903,
+    "precision": 0.9836,
+    "recall": 0.9375,
+    "f1_score": 0.96,
+    "confusion_matrix": [
+      [
+        902,
+        2
+      ],
+      [
+        8,
+        120
+      ]
+    ],
+    "is_best": true
+  }
+]

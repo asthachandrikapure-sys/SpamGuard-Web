@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SpamGuard — AI-powered SMS security. Automatically detect and block spam messages with real-time machine learning protection." />
+    <title>SpamGuard — Real-Time SMS Security</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <!-- Minimal header for landing page -->
+    <header class="site-header">
+      <div class="container nav-shell">
+        <a href="/" class="brand" aria-label="SpamGuard home">
+          <span class="brand-mark">🛡️</span>
+          <span>
+            <span class="brand-text">SPAMGUARD</span>
+            <span class="brand-tagline">Real-Time SMS Security</span>
+          </span>
+        </a>
+        <div class="nav-right">
+          <a href="/login" class="btn btn-secondary btn-sm">Login</a>
+          <a href="/signup" class="btn btn-primary btn-sm">Get Started Free</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero-section">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <div class="hero-eyebrow">
+              <span class="eyebrow"><span class="pulse-dot"></span> AI-Powered Security</span>
+            </div>
+            <h1 class="hero-title">Your Phone Deserves<br/>AI Protection</h1>
+            <p class="hero-sub">SpamGuard automatically detects spam SMS with machine learning — before you even read it. Real-time. Intelligent. Private.</p>
+            <div class="hero-actions">
+              <a href="/signup" class="btn btn-primary btn-lg">
+                🛡️ Start Protection
+              </a>
+              <a href="/login" class="btn btn-secondary btn-lg">
+                Sign In
+              </a>
+            </div>
+            <p class="hero-note">✓ Free to use &nbsp;·&nbsp; ✓ No SMS sent automatically &nbsp;·&nbsp; ✓ Privacy-first</p>
+          </div>
+
+          <div class="hero-visual" aria-label="SpamGuard pipeline">
+            <div class="hv-header">
+              <span>LIVE CLASSIFICATION PIPELINE</span>
+              <span class="hv-live"><span class="pulse-dot"></span> MODEL READY</span>
+            </div>
+            <div class="hv-pipeline">
+              <div class="hv-step">
+                <div class="hv-num">01</div>
+                <div>
+                  <div class="hv-label">📱 Android SMS Received</div>
+                  <div class="hv-sub">SpamGuard app detects incoming message</div>
+                </div>
+              </div>
+              <div class="hv-step">
+                <div class="hv-num">02</div>
+                <div>
+                  <div class="hv-label">🔒 Sent Securely to Flask API</div>
+                  <div class="hv-sub">Encrypted HTTPS transmission</div>
+                </div>
+              </div>
+              <div class="hv-step">
+                <div class="hv-num">03</div>
+                <div>
+                  <div class="hv-label">🧠 AI Model Analysis</div>
+                  <div class="hv-sub">TF-IDF + SVM classifier processes text</div>
+                </div>
+              </div>
+              <div class="hv-step">
+                <div class="hv-num">04</div>
+                <div>
+                  <div class="hv-label">💾 Result Stored in MySQL</div>
+                  <div class="hv-sub">Prediction, confidence, risk level saved</div>
+                </div>
+              </div>
+              <div class="hv-result">
+                <span style="font-size:0.85rem;font-weight:600;color:var(--text-soft)">Classification result</span>
+                <div style="display:flex;gap:8px">
+                  <span class="badge badge-spam">🚨 SPAM</span>
+                  <span class="badge badge-safe">🛡️ SAFE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="features-section" style="border-top:1px solid var(--border-soft);">
+        <div class="container">
+          <div class="text-center" style="margin-bottom:16px">
+            <span class="section-tag">Why SpamGuard</span>
+          </div>
+          <h2 style="text-align:center;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;letter-spacing:-0.04em;margin-bottom:40px">
+            Built for Real-World SMS Protection
+          </h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon-wrap" style="background:rgba(239,68,68,0.1);color:#f87171">🚨</div>
+              <h3>Instant Spam Detection</h3>
+              <p>Every incoming SMS is automatically analyzed by our trained machine learning model with 99%+ accuracy.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap" style="background:rgba(139,92,246,0.12);color:#a78bfa">🧠</div>
+              <h3>AI Confidence Scoring</h3>
+              <p>Not just spam or safe — SpamGuard gives you a precise confidence score and risk level for every message.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap" style="background:rgba(34,211,238,0.1);color:var(--cyan)">📱</div>
+              <h3>Android Integration</h3>
+              <p>The companion Android app silently monitors incoming SMS and sends them to the backend for classification.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap" style="background:rgba(59,130,246,0.12);color:var(--blue-bright)">📊</div>
+              <h3>Live Analytics Dashboard</h3>
+              <p>Real-time charts showing spam vs safe ratios, risk distribution, and daily detection trends.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap" style="background:rgba(16,185,129,0.12);color:var(--green)">🔒</div>
+              <h3>Privacy-First Design</h3>
+              <p>Phone numbers are masked. SMS content is never shared. Only classification metadata is stored.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap" style="background:rgba(245,158,11,0.12);color:var(--orange)">🔔</div>
+              <h3>High-Risk Alerts</h3>
+              <p>Get instant notifications on your Android device when a high-risk spam SMS is detected.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section style="padding:80px 0;text-align:center">
+        <div class="container">
+          <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-0.04em;margin-bottom:16px">
+            Ready to Protect Your Inbox?
+          </h2>
+          <p style="color:var(--text-soft);font-size:1.05rem;margin-bottom:32px">
+            Create your free account and connect the SpamGuard Android app to start protecting in minutes.
+          </p>
+          <a href="/signup" class="btn btn-primary btn-lg">
+            🛡️ Create Free Account
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-shell">
+        <div>
+          <div class="footer-brand">🛡️ SPAMGUARD</div>
+          <div class="footer-note">Real-Time SMS Security</div>
+        </div>
+        <div class="footer-copy">Python · Flask · Scikit-learn · MySQL · Android/Kotlin</div>
+      </div>
+    </footer>
+  </body>
+</html>

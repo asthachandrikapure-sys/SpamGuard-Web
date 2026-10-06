@@ -1,0 +1,12 @@
+# IMPORTANT: Use 64-bit Python 3.10+ to install these packages.
+# On Windows, if you have multiple Python installations, use:
+#   py -V:3.13 -m pip install -r requirements.txt
+# to target the 64-bit Python 3.13 interpreter.
+
+Flask>=2.3.0
+flask-cors>=4.0.0
+pandas>=2.0.0
+numpy>=1.23.0
+scikit-learn>=1.2.0
+joblib>=1.2.0
+mysql-connector-python>=8.3.0

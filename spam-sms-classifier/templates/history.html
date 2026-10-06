@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}SMS History | SpamGuard{% endblock %}
+
+{% block content %}
+<section class="page-section history-page">
+  <div class="container">
+    <div class="page-header">
+      <span class="section-tag">Phone detections <span class="live-dot"></span></span>
+      <h1>SMS History</h1>
+      <p>Classifications received from the connected SpamGuard phone. Sender IDs and message previews are masked.</p>
+    </div>
+
+    <div class="history-toolbar">
+      <div class="filter-group" role="group" aria-label="Filter SMS history">
+        <button class="filter-btn active" data-filter="all" type="button">All</button>
+        <button class="filter-btn" data-filter="spam" type="button">Spam</button>
+        <button class="filter-btn" data-filter="ham" type="button">Safe</button>
+      </div>
+      <span id="history-count" class="history-count">Loading…</span>
+    </div>
+
+    <div id="history-list" class="activity-list history-list" aria-live="polite">
+      <div class="activity-empty">Loading phone activity…</div>
+    </div>
+    <p id="history-error" class="data-status" role="status"></p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

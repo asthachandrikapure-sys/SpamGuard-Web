@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}About | Spam SMS Classifier{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container narrow">
+    <div class="page-header">
+      <span class="section-tag">About</span>
+      <h1>About Spam SMS Classifier</h1>
+      <p>Designed to help users identify suspicious SMS content before it becomes a problem.</p>
+    </div>
+
+    <div class="info-stack">
+      <div class="panel-card">
+        <h3>Project Goal</h3>
+        <p>
+          This application demonstrates how machine learning and natural language processing can be used to classify SMS texts as spam or legitimate communication.
+        </p>
+      </div>
+
+      <div class="panel-card">
+        <h3>Technology Stack</h3>
+        <p>Python, Flask, Scikit-learn, TF-IDF vectorization, MySQL, and a responsive frontend dashboard.</p>
+      </div>
+
+      <div class="panel-card">
+        <h3>How It Works</h3>
+        <p>
+          User messages are processed through a trained vectorizer and classifier, producing a prediction with a confidence score and a record saved in the database for analytics.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

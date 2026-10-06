@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — SpamGuard{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container">
+    <!-- Dashboard hero banner -->
+    <div class="dashboard-hero">
+      <div>
+        <h1 class="dh-title">🛡️ Your SMS Protection is Active</h1>
+        <p class="dh-sub">SpamGuard is monitoring incoming messages in real time.</p>
+      </div>
+      <div class="protection-badge" id="protection-badge">
+        <span class="pulse-dot"></span> PROTECTION ACTIVE
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon blue">📨</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">SMS Scanned</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-icon red">🚨</div>
+        <div class="stat-value" id="stat-spam">—</div>
+        <div class="stat-label">Spam Detected</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-icon green">🛡️</div>
+        <div class="stat-value" id="stat-safe">—</div>
+        <div class="stat-label">Safe Messages</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-icon orange">⚠️</div>
+        <div class="stat-value" id="stat-high-risk">—</div>
+        <div class="stat-label">High Risk</div>
+      </div>
+    </div>
+
+    <!-- Main content grid -->
+    <div class="dash-grid">
+      <!-- Recent SMS activity -->
+      <div class="dash-panel">
+        <div class="panel-header">
+          <div>
+            <span class="panel-kicker">Live Feed</span>
+            <h2 class="panel-title">Recent SMS Activity</h2>
+          </div>
+          <a href="/inbox" class="btn btn-ghost btn-sm">View all →</a>
+        </div>
+        <div id="recent-activity" class="activity-list">
+          <div class="loading-row"><span class="spinner"></span> Loading activity…</div>
+        </div>
+        <p id="activity-error" class="data-status"></p>
+      </div>
+
+      <!-- Protection status + mini chart -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div class="dash-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-kicker">Device</span>
+              <h2 class="panel-title">Phone Status</h2>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="settings-row" style="padding:10px 0">
+              <div class="settings-row-info">
+                <strong>Phone Connection</strong>
+                <small>Heartbeat from SpamGuard Android app</small>
+              </div>
+              <span class="setting-value" id="phone-status">Checking…</span>
+            </div>
+            <div class="settings-row" style="padding:10px 0">
+              <div class="settings-row-info">
+                <strong>SMS Monitoring</strong>
+                <small>Android SMS permission and opt-in</small>
+              </div>
+              <span class="setting-value" id="monitoring-status">Checking…</span>
+            </div>
+            <div class="settings-row" style="padding:10px 0;border-bottom:none">
+              <div class="settings-row-info">
+                <strong>AI Detection</strong>
+                <small>SpamGuard ML model (SVM + TF-IDF)</small>
+              </div>
+              <span class="setting-value" id="ml-status">Checking…</span>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <a href="/devices" class="btn btn-secondary btn-sm btn-full">Manage Devices →</a>
+          </div>
+        </div>
+
+        <div class="dash-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-kicker">Distribution</span>
+              <h2 class="panel-title">Spam vs Safe</h2>
+            </div>
+          </div>
+          <div class="chart-container" style="height:180px">
+            <canvas id="doughnut-chart"></canvas>
+          </div>
+          <div id="chart-empty" class="sms-empty" style="display:none;padding:20px">
+            <p style="font-size:0.85rem">No data yet. Connect your Android device to start scanning.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

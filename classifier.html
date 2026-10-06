@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}SpamGuard | SMS Classifier{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="container narrow">
+    <div class="page-header">
+      <span class="section-tag">Classifier</span>
+      <h1>SMS Classifier</h1>
+      <p>Analyze a message using our trained machine learning model.</p>
+    </div>
+
+    <div class="panel-grid two-col">
+      <div class="panel-card input-panel">
+        <div class="panel-topbar">
+          <span class="panel-title">Message Input</span>
+          <span class="char-counter" id="char-counter">0 / 1000</span>
+        </div>
+
+        <textarea id="sms-input" maxlength="1000" placeholder="Enter or paste your SMS message here..."></textarea>
+
+        <div class="button-row">
+          <button class="btn btn-primary" id="btn-classify">
+            <span class="spinner hidden" id="spinner">↻</span>
+            Classify Message
+          </button>
+          <button class="btn btn-secondary" id="btn-clear">Clear</button>
+        </div>
+
+        <div class="sample-wrapper">
+          <span class="sample-label">Try a sample:</span>
+          <div class="sample-buttons">
+            <button class="sample-btn sample-spam" data-msg="Congratulations! You have won a free prize. Call now to claim your reward.">Spam Sample</button>
+            <button class="sample-btn sample-ham" data-msg="Hey, are you coming to college today?">Ham Sample</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card result-panel" id="result-card">
+        <div id="result-placeholder" class="result-placeholder">
+          <div class="placeholder-icon">✉️</div>
+          <p>Your prediction will appear here.</p>
+        </div>
+
+        <div id="result-content" class="result-content hidden">
+          <div class="result-badge" id="result-badge">
+            <span id="result-label">HAM MESSAGE</span>
+          </div>
+          <p class="result-verdict" id="result-verdict">✓ This message appears to be legitimate.</p>
+
+          <div class="result-stats">
+            <div class="stat-line">
+              <span>Confidence</span>
+              <strong id="detail-confidence">--</strong>
+            </div>
+            <div class="stat-line">
+              <span>Model Used</span>
+              <strong id="detail-model">--</strong>
+            </div>
+            <div class="stat-line">
+              <span>Message</span>
+              <strong id="detail-message">--</strong>
+            </div>
+          </div>
+
+          <div class="confidence-block">
+            <div class="confidence-head">
+              <span>Confidence Level</span>
+              <span id="confidence-pct">0%</span>
+            </div>
+            <div class="confidence-track">
+              <div id="confidence-bar" class="confidence-fill"></div>
+            </div>
+          </div>
+
+          <div class="analysis-box">
+            <span class="analysis-label">Message Analyzed</span>
+            <p id="analyzed-msg-text">--</p>
+          </div>
+
+          <p class="disclaimer">Machine learning predictions are not a guarantee of message safety.</p>
+        </div>
+
+        <div id="result-error" class="result-error hidden">
+          <div class="error-icon">⚠</div>
+          <p id="error-message">An error occurred.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/classifier.js') }}"></script>
+{% endblock %}
