@@ -725,15 +725,15 @@ private fun SettingsScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     OutlinedButton(
                         onClick = {
-                            val lanUrl = "http://192.168.1.107:5000/"
-                            apiUrlInput = lanUrl
-                            ProtectionPreferences.setApiBaseUrl(context, lanUrl)
-                            settingsSavedMessage = "API URL set to LAN IP: $lanUrl"
+                            val renderUrl = "https://spam-sms-classifier.onrender.com/"
+                            apiUrlInput = renderUrl
+                            ProtectionPreferences.setApiBaseUrl(context, renderUrl)
+                            settingsSavedMessage = "API URL set to Render: $renderUrl"
                             onRefresh()
                         },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Local LAN (192.168.1.107)")
+                        Text("Use Render URL")
                     }
                     Button(
                         onClick = {

@@ -5,3 +5,8 @@ services:
     rootDir: .
     buildCommand: pip install -r backend/requirements.txt
     startCommand: 'cd backend && gunicorn app:app --bind 0.0.0.0:$PORT'
+    envVars:
+      - key: SPAM_DB_DRIVER
+        value: sqlite
+      - key: FLASK_SECRET_KEY
+        generateValue: true
